@@ -1,7 +1,7 @@
-import { useAuth } from "@clerk/clerk-expo";
-import { Redirect, Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { Redirect, Tabs } from "expo-router";
 import { COLORS } from "../../constants/colors";
+import { useAuth } from "@clerk/clerk-expo";
 
 const TabsLayout = () => {
   // const { isSignedIn, isLoaded } = useAuth();
@@ -49,6 +49,13 @@ const TabsLayout = () => {
         options={{
           title: "Favorites",
           tabBarIcon: ({ color, size }) => <Ionicons name="heart" size={size} color={color} />,
+        }}
+      />
+       <Tabs.Screen
+        name="Setting"
+        options={{
+          title: "Setting",
+          tabBarIcon: ({ color, size }) => <Ionicons name="settings-outline" size={size} color={color} />,
         }}
       />
     </Tabs>

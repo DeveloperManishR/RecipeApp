@@ -1,15 +1,18 @@
-import { View, Text, Alert, ScrollView, TouchableOpacity, FlatList } from "react-native";
 import { useClerk, useUser } from "@clerk/clerk-expo";
-import { useEffect, useState } from "react";
-import { API_URL } from "../../constants/api";
-import { favoritesStyles } from "../../assets/styles/favorites.styles";
-import { COLORS } from "../../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
-import RecipeCard from "../../components/RecipeCard";
-import NoFavoritesFound from "../../components/NoFavoritesFound";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { favoritesStyles } from "../../assets/styles/favorites.styles";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import NoFavoritesFound from "../../components/NoFavoritesFound";
+import RecipeCard from "../../components/RecipeCard";
+import { API_URL } from "../../constants/api";
+import { COLORS } from "../../constants/colors";
 
 const FavoritesScreen = () => {
+    const router = useRouter();
+  
   const { signOut } = useClerk();
   const { user } = useUser();
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
@@ -46,11 +49,16 @@ const FavoritesScreen = () => {
   }, [user?.id]);
 
   const handleSignOut = () => {
-    // Alert.alert("Logout", "Are you sure you want to logout?", [
-    //   { text: "Cancel", style: "cancel" },
-    //   { text: "Logout", style: "destructive", onPress: signOut },
-    // ]);
+    Alert.alert("Logout", "Are you sure you want to logout?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Logout", style: "destructive", onPress: handlelogout },
+    ]);
   };
+
+  const handlelogout=()=>{
+    signOut()
+    router.push("/(auth)/sign-in")
+  }
 
   if (loading) return <LoadingSpinner message="Loading your favorites..." />;
 
@@ -59,12 +67,12 @@ const FavoritesScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={favoritesStyles.header}>
           <Text style={favoritesStyles.title}>Favorites</Text>
-          {/* <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
-            <Ionicons name="log-out-outline" size={22} color={COLORS.text} />
-          </TouchableOpacity> */}
           <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
-            <Ionicons name="settings" size={22} color={COLORS.text} />
+            <Ionicons name="log-out-outline" size={22} color={COLORS.text} />
           </TouchableOpacity>
+          {/* <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
+            <Ionicons name="settings" size={22} color={COLORS.text} />
+          </TouchableOpacity> */}
         </View>
 
         <View style={favoritesStyles.recipesSection}>

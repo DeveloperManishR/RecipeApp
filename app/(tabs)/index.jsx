@@ -9,6 +9,7 @@ import { Ionicons } from "@expo/vector-icons";
 import CategoryFilter from "../../components/CategoryFilter";
 import RecipeCard from "../../components/RecipeCard";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import { withoutAuthAxios } from "../../config/config";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -46,7 +47,7 @@ const HomeScreen = () => {
         .map((meal) => MealAPI.transformMealData(meal))
         .filter((meal) => meal !== null);
 
-      setRecipes(transformedMeals);
+      //setRecipes(transformedMeals);
 
       const transformedFeatured = MealAPI.transformMealData(featuredMeal);
       setFeaturedRecipe(transformedFeatured);
@@ -63,7 +64,7 @@ const HomeScreen = () => {
       const transformedMeals = meals
         .map((meal) => MealAPI.transformMealData(meal))
         .filter((meal) => meal !== null);
-      setRecipes(transformedMeals);
+     // setRecipes(transformedMeals);
     } catch (error) {
       console.error("Error loading category data:", error);
       setRecipes([]);
@@ -82,12 +83,34 @@ const HomeScreen = () => {
     setRefreshing(false);
   };
 
+
+  const getAllRecipesData=async()=>{
+    console.log("callerf")
+     await withoutAuthAxios()
+     .get(`/recipes`)
+     .then((res)=>{
+      console.log("frgbe",res)
+
+      setRecipes(res.data.data)
+     }).catch((error)=>{ 
+  console.log("err",error)  
+     })
+  } 
+
+
+  console.log("res",recipes)
+
+
+
+  
+
   useEffect(() => {
-    loadData();
+    //loadData();
+    getAllRecipesData() 
   }, []);
 
-  if (loading && !refreshing) return <LoadingSpinner message="Loading delicions recipes..." />;
-
+  // if (loading && !refreshing) return <LoadingSpinner message="Loading delicions recipes..." />;
+ 
   return (
     <View style={homeStyles.container}>
       <ScrollView
@@ -95,14 +118,14 @@ const HomeScreen = () => {
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={COLORS.primary}
-          />
+            //onRefresh={onRefresh}
+            tintColor={COLORS.primary} 
+          /> 
         }
         contentContainerStyle={homeStyles.scrollContent}
       >
         {/*  ANIMAL ICONS */}
-        <View style={homeStyles.welcomeSection}>
+        {/* <View style={homeStyles.welcomeSection}>
           <Image
             source={require("../../assets/images/lamb.png")}
             style={{
@@ -124,10 +147,10 @@ const HomeScreen = () => {
               height: 100,
             }}
           />
-        </View>
+        </View> */}
 
         {/* FEATURED SECTION */}
-        {featuredRecipe && (
+        {/* {featuredRecipe && (
           <View style={homeStyles.featuredSection}>
             <TouchableOpacity
               style={homeStyles.featuredCard}
@@ -172,30 +195,30 @@ const HomeScreen = () => {
               </View>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
-        {categories.length > 0 && (
+        {/* {categories.length > 0 && (
           <CategoryFilter
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
           />
-        )}
+        )} */}
 
         <View style={homeStyles.recipesSection}>
-          <View style={homeStyles.sectionHeader}>
+          {/* <View style={homeStyles.sectionHeader}>
             <Text style={homeStyles.sectionTitle}>{selectedCategory}</Text>
-          </View>
+          </View> */}
 
           {recipes.length > 0 ? (
-            <FlatList
+            <FlatList 
               data={recipes}
               renderItem={({ item }) => <RecipeCard recipe={item} />}
               keyExtractor={(item) => item.id.toString()}
-              numColumns={2}
+              numColumns={2} 
               columnWrapperStyle={homeStyles.row}
               contentContainerStyle={homeStyles.recipesGrid}
-              scrollEnabled={false}
+              scrollEnabled={false} 
               // ListEmptyComponent={}
             />
           ) : (

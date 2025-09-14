@@ -14,6 +14,7 @@ import { COLORS } from "../../constants/colors";
 
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
+import { withoutAuthAxios } from "../../config/config";
 
 const RecipeDetailScreen = () => {
   const { id: recipeId } = useLocalSearchParams();
@@ -24,8 +25,8 @@ const RecipeDetailScreen = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  const { user } = useUser();
-  const userId = user?.id;
+  // const { user } = useUser();
+  // const userId = user?.id;
   const checkIfSaved = async () => {
     try {
       const response = await fetch(`${API_URL}/favorites/${userId}`);
@@ -56,20 +57,25 @@ const RecipeDetailScreen = () => {
       setLoading(false);
     }
   };
+
+
+  const getSingleRecipe = async () => {
+
+    await withoutAuthAxios()
+      .get(`/recipes/${recipeId}`)
+      .then((res) => {
+
+        setLoading(false)
+        setRecipe(res.data.data)
+
+        // setRecipes(res.data.data)
+      }).catch((error) => {
+        console.log("err", error)
+      })
+  }
   useEffect(() => {
-
-   
-
-
-
-
-    if(userId){
-    checkIfSaved();
-
-    }
-
-    loadRecipeDetail();
-  }, [recipeId, userId]);
+    getSingleRecipe(recipeId)
+  }, [recipeId]);
 
   const getYouTubeEmbedUrl = (url) => {
     // example url: https://www.youtube.com/watch?v=mTvlmY4vCug
@@ -78,26 +84,26 @@ const RecipeDetailScreen = () => {
   };
 
   const handleToggleSave = async () => {
-  
-if (!user) {
-    Alert.alert(
-      "Login Required",
-      "Please log in to save recipes",
-      [
-        {
-          text: "No",
-          style: "cancel",
-        },
-        {
-          text: "Yes",
-          onPress: () => router.push("/(auth)/sign-in"), // navigate to sign in
-        },
-      ],
-      { cancelable: true }
-    );
-    return;
-  }
-    
+
+    if (!user) {
+      Alert.alert(
+        "Login Required",
+        "Please log in to save recipes",
+        [
+          {
+            text: "No",
+            style: "cancel",
+          },
+          {
+            text: "Yes",
+            onPress: () => router.push("/(auth)/sign-in"), // navigate to sign in
+          },
+        ],
+        { cancelable: true }
+      );
+      return;
+    }
+
     setIsSaving(true);
 
     try {
@@ -134,9 +140,9 @@ if (!user) {
       Alert.alert("Error", `Something went wrong. Please try again.`);
     } finally {
       setIsSaving(false);
-    
 
-  }
+
+    }
   };
 
   if (loading) return <LoadingSpinner message="Loading recipe details..." />;
@@ -144,11 +150,11 @@ if (!user) {
   return (
     <View style={recipeDetailStyles.container}>
       <ScrollView>
-        {/* HEADER */}
+
         <View style={recipeDetailStyles.headerContainer}>
           <View style={recipeDetailStyles.imageContainer}>
             <Image
-              source={{ uri: recipe.image }}
+              source={{ uri: recipe?.image }}
               style={recipeDetailStyles.headerImage}
               contentFit="cover"
             />
@@ -183,23 +189,29 @@ if (!user) {
             </TouchableOpacity>
           </View>
 
-          {/* Title Section */}
+
           <View style={recipeDetailStyles.titleSection}>
-            <View style={recipeDetailStyles.categoryBadge}>
-              <Text style={recipeDetailStyles.categoryText}>{recipe.category}</Text>
-            </View>
-            <Text style={recipeDetailStyles.recipeTitle}>{recipe.title}</Text>
-            {recipe.area && (
+
+            {
+              recipe.tags && recipe.tags.map((tag, index) => (
+                <View style={recipeDetailStyles.categoryBadge}>
+                  <Text style={recipeDetailStyles.categoryText}>{tag}</Text>
+                </View>
+              ))
+            }
+
+            <Text style={recipeDetailStyles.recipeTitle}>{recipe?.name}</Text>
+            {recipe?.cuisine && (
               <View style={recipeDetailStyles.locationRow}>
                 <Ionicons name="location" size={16} color={COLORS.white} />
-                <Text style={recipeDetailStyles.locationText}>{recipe.area} Cuisine</Text>
+                <Text style={recipeDetailStyles.locationText}>{recipe?.cuisine} Cuisine</Text>
               </View>
             )}
           </View>
         </View>
 
         <View style={recipeDetailStyles.contentSection}>
-          {/* QUICK STATS */}
+
           <View style={recipeDetailStyles.statsContainer}>
             <View style={recipeDetailStyles.statCard}>
               <LinearGradient
@@ -208,7 +220,7 @@ if (!user) {
               >
                 <Ionicons name="time" size={20} color={COLORS.white} />
               </LinearGradient>
-              <Text style={recipeDetailStyles.statValue}>{recipe.cookTime}</Text>
+              <Text style={recipeDetailStyles.statValue}>{recipe?.prepTimeMinutes}</Text>
               <Text style={recipeDetailStyles.statLabel}>Prep Time</Text>
             </View>
 
@@ -219,12 +231,12 @@ if (!user) {
               >
                 <Ionicons name="people" size={20} color={COLORS.white} />
               </LinearGradient>
-              <Text style={recipeDetailStyles.statValue}>{recipe.servings}</Text>
+              <Text style={recipeDetailStyles.statValue}>{recipe?.servings}</Text>
               <Text style={recipeDetailStyles.statLabel}>Servings</Text>
             </View>
           </View>
 
-          {recipe.youtubeUrl && (
+          {/* {recipe?.youtubeUrl && (
             <View style={recipeDetailStyles.sectionContainer}>
               <View style={recipeDetailStyles.sectionTitleRow}>
                 <LinearGradient
@@ -240,15 +252,15 @@ if (!user) {
               <View style={recipeDetailStyles.videoCard}>
                 <WebView
                   style={recipeDetailStyles.webview}
-                  source={{ uri: getYouTubeEmbedUrl(recipe.youtubeUrl) }}
+                  source={{ uri: getYouTubeEmbedUrl(recipe?.youtubeUrl) }}
                   allowsFullscreenVideo
                   mediaPlaybackRequiresUserAction={false}
                 />
               </View>
             </View>
-          )}
+          )} */}
 
-          {/* INGREDIENTS SECTION */}
+
           <View style={recipeDetailStyles.sectionContainer}>
             <View style={recipeDetailStyles.sectionTitleRow}>
               <LinearGradient
@@ -278,7 +290,7 @@ if (!user) {
             </View>
           </View>
 
-          {/* INSTRUCTIONS SECTION */}
+
           <View style={recipeDetailStyles.sectionContainer}>
             <View style={recipeDetailStyles.sectionTitleRow}>
               <LinearGradient

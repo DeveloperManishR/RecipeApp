@@ -5,12 +5,12 @@ import { Slot } from "expo-router";
 
 export default function RootLayout() {
   return (
-    <ClerkProvider
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
-      tokenCache={tokenCache}>
+    // <ClerkProvider
+    //   publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY}
+    //   tokenCache={tokenCache}>
       <SafeScreen>
         <Slot />
       </SafeScreen>
-    </ClerkProvider>
+    // </ClerkProvider>
   );
 }

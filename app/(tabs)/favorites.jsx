@@ -67,9 +67,9 @@ const FavoritesScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={favoritesStyles.header}>
           <Text style={favoritesStyles.title}>Favorites</Text>
-          <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
+          {/* <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
             <Ionicons name="log-out-outline" size={22} color={COLORS.text} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           {/* <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
             <Ionicons name="settings" size={22} color={COLORS.text} />
           </TouchableOpacity> */}

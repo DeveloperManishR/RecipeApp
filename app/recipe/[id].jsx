@@ -1,7 +1,6 @@
 import { View, Text, Alert, ScrollView, TouchableOpacity } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { useUser } from "@clerk/clerk-expo";
 import { API_URL } from "../../constants/api";
 import { MealAPI } from "../../services/mealAPI";
 import LoadingSpinner from "../../components/LoadingSpinner";
@@ -15,18 +14,21 @@ import { COLORS } from "../../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
 import { withoutAuthAxios } from "../../config/config";
-
+import { useAuth } from "../../context/AuthContext";
 const RecipeDetailScreen = () => {
   const { id: recipeId } = useLocalSearchParams();
   const router = useRouter();
+
+    const { user } = useAuth()
+
+
 
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  // const { user } = useUser();
-  // const userId = user?.id;
+  
   const checkIfSaved = async () => {
     try {
       const response = await fetch(`${API_URL}/favorites/${userId}`);

@@ -1,16 +1,13 @@
-import { useAuth, useClerk } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
 import { COLORS } from "../../constants/colors";
 import { useRouter } from "expo-router";
-
+import { useContext } from "react";
+import { useAuth } from "../../context/AuthContext";
 const Setting = () => {
-    const { signOut, user } = useClerk();
-    const { isSignedIn, isLoaded } = useAuth();
+
+    const { user } = useAuth()
     const router = useRouter();
-
-    console.log("userDetails", user)
-
     const handleLogout = () => {
         Alert.alert(
             "Sign Out",
@@ -34,16 +31,10 @@ const Setting = () => {
     };
 
     // Show loading state while auth is loading
-    if (!isLoaded) {
-        return (
-            <View style={[styles.container, styles.centerContent, { backgroundColor: COLORS.background }]}>
-                <Text style={[styles.loadingText, { color: COLORS.textLight }]}>Loading...</Text>
-            </View>
-        );
-    }
+
 
     // Show sign-in prompt for unauthenticated users
-    if (!isSignedIn) {
+    if (!user) {
         return (
             <View style={[styles.container, styles.centerContent, { backgroundColor: COLORS.background }]}>
                 <View style={[styles.signInCard, { backgroundColor: COLORS.card, shadowColor: COLORS.shadow }]}>

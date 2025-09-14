@@ -64,7 +64,7 @@ const HomeScreen = () => {
       const transformedMeals = meals
         .map((meal) => MealAPI.transformMealData(meal))
         .filter((meal) => meal !== null);
-     // setRecipes(transformedMeals);
+      // setRecipes(transformedMeals);
     } catch (error) {
       console.error("Error loading category data:", error);
       setRecipes([]);
@@ -72,8 +72,8 @@ const HomeScreen = () => {
   };
 
   const handleCategorySelect = async (category) => {
-    setSelectedCategory(category);
-    await loadCategoryData(category);
+    // setSelectedCategory(category);
+    // await loadCategoryData(category);
   };
 
   const onRefresh = async () => {
@@ -84,33 +84,45 @@ const HomeScreen = () => {
   };
 
 
-  const getAllRecipesData=async()=>{
-    console.log("callerf")
-     await withoutAuthAxios()
-     .get(`/recipes`)
-     .then((res)=>{
-      console.log("frgbe",res)
+  const getAllRecipesData = async () => {
 
-      setRecipes(res.data.data)
-     }).catch((error)=>{ 
-  console.log("err",error)  
-     })
-  } 
+    await withoutAuthAxios()
+      .get(`/recipes`)
+      .then((res) => {
+        console.log("frgbe", res)
+        setLoading(false)
+        setRecipes(res.data.data) 
+      }).catch((error) => {
+
+      })
+  }
+
+  const getAllMealTypes=async()=>{
+    await withoutAuthAxios()
+    .get(`/mealTypes`)
+    .then((res) => {
+      console.log("cvdsvx ", res)
+      setLoading(false)
+      setCategories(res.data.data) 
+    }).catch((error) => {
+    console.log("err",error)
+    })
+  }
 
 
-  console.log("res",recipes)
-
+  console.log("res", process.env.EXPO_API_BASEURL)
 
 
   
 
+
   useEffect(() => {
-    //loadData();
-    getAllRecipesData() 
+    getAllRecipesData()
+    getAllMealTypes() 
   }, []);
 
-  // if (loading && !refreshing) return <LoadingSpinner message="Loading delicions recipes..." />;
- 
+  if (loading && !refreshing) return <LoadingSpinner message="Loading delicions recipes..." />;
+
   return (
     <View style={homeStyles.container}>
       <ScrollView
@@ -119,8 +131,8 @@ const HomeScreen = () => {
           <RefreshControl
             refreshing={refreshing}
             //onRefresh={onRefresh}
-            tintColor={COLORS.primary} 
-          /> 
+            tintColor={COLORS.primary}
+          />
         }
         contentContainerStyle={homeStyles.scrollContent}
       >
@@ -197,13 +209,13 @@ const HomeScreen = () => {
           </View>
         )} */}
 
-        {/* {categories.length > 0 && (
+        {categories.length > 0 && (
           <CategoryFilter
             categories={categories}
             selectedCategory={selectedCategory}
             onSelectCategory={handleCategorySelect}
           />
-        )} */}
+        )}
 
         <View style={homeStyles.recipesSection}>
           {/* <View style={homeStyles.sectionHeader}>
@@ -211,15 +223,15 @@ const HomeScreen = () => {
           </View> */}
 
           {recipes.length > 0 ? (
-            <FlatList 
+            <FlatList
               data={recipes}
               renderItem={({ item }) => <RecipeCard recipe={item} />}
               keyExtractor={(item) => item.id.toString()}
-              numColumns={2} 
+              numColumns={2}
               columnWrapperStyle={homeStyles.row}
               contentContainerStyle={homeStyles.recipesGrid}
-              scrollEnabled={false} 
-              // ListEmptyComponent={}
+              scrollEnabled={false}
+            // ListEmptyComponent={}
             />
           ) : (
             <View style={homeStyles.emptyState}>

@@ -11,10 +11,10 @@ import { API_URL } from "../../constants/api";
 import { COLORS } from "../../constants/colors";
 
 const FavoritesScreen = () => {
-    const router = useRouter();
-  
-  const { signOut } = useClerk();
-  const { user } = useUser();
+  const router = useRouter();
+
+
+
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const loadFavorites = async () => {
@@ -40,13 +40,13 @@ const FavoritesScreen = () => {
   };
   useEffect(() => {
 
-    if (user) {
-      loadFavorites();
-    } else {
-      setLoading(false);
-    }
+    // if () {
+    //   loadFavorites();
+    // } else {
 
-  }, [user?.id]);
+    // }
+    setLoading(false);
+  }, []);
 
   const handleSignOut = () => {
     Alert.alert("Logout", "Are you sure you want to logout?", [
@@ -55,7 +55,7 @@ const FavoritesScreen = () => {
     ]);
   };
 
-  const handlelogout=()=>{
+  const handlelogout = () => {
     signOut()
     router.push("/(auth)/sign-in")
   }
@@ -67,14 +67,7 @@ const FavoritesScreen = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={favoritesStyles.header}>
           <Text style={favoritesStyles.title}>Favorites</Text>
-          {/* <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
-            <Ionicons name="log-out-outline" size={22} color={COLORS.text} />
-          </TouchableOpacity> */}
-          {/* <TouchableOpacity style={favoritesStyles.logoutButton} onPress={handleSignOut}>
-            <Ionicons name="settings" size={22} color={COLORS.text} />
-          </TouchableOpacity> */}
         </View>
-
         <View style={favoritesStyles.recipesSection}>
           <FlatList
             data={favoriteRecipes}

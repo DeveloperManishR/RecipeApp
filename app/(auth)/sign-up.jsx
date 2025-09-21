@@ -9,38 +9,80 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useSignUp } from "@clerk/clerk-expo";
 import { useState } from "react";
 import { authStyles } from "../../assets/styles/auth.styles";
 import { Image } from "expo-image";
 import { COLORS } from "../../constants/colors";
-
 import { Ionicons } from "@expo/vector-icons";
-import VerifyEmail from "./verify-email";
+import { withoutAuthAxios } from "../../config/config";
+import { z } from "zod";
 
 const SignUpScreen = () => {
   const router = useRouter();
-  const { isLoaded, signUp } = useSignUp();
+  const [name, setName] = useState('');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [pendingVerification, setPendingVerification] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  // Define the validation schema
+  const signUpSchema = z.object({
+    name: z.string()
+      .min(3, "Name must be at least 3 characters")
+      .max(20, "Name must be less than 20 characters")
+      .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces"),
+    email: z.string()
+      .email("Please enter a valid email address"),
+    password: z.string()
+      .min(6, "Password must be at least 6 characters")
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+        "Password must contain at least one uppercase letter, one lowercase letter, and one number")
+  });
+
+
+  const validateForm = () => {
+    try {
+      signUpSchema.parse({ name, email, password });
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors = {};
+
+        error.issues.forEach((issue) => {
+          const field = issue.path[0];
+          // keep only the first error per field
+          if (!newErrors[field]) {
+            newErrors[field] = issue.message;
+          }
+        });
+
+        setErrors(newErrors);
+      } else {
+        console.error("Unexpected error:", error);
+      }
+      return false;
+    }
+  };
+
 
   const handleSignUp = async () => {
-    if (!email || !password) return Alert.alert("Error", "Please fill in all fields");
-    if (password.length < 6) return Alert.alert("Error", "Password must be at least 6 characters");
-
-    if (!isLoaded) return;
+    if (!validateForm()) return;
 
     setLoading(true);
 
+    const payLoad = {
+      name: name,
+      email: email,
+      password: password
+    };
+
     try {
-      await signUp.create({ emailAddress: email, password });
-
-      await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
-
-      setPendingVerification(true);
+      const response = await withoutAuthAxios().post(`/register`, payLoad);
+    
+      router.push('/login')
+      // You might want to navigate to login or verify email screen
     } catch (err) {
       Alert.alert("Error", err.errors?.[0]?.message || "Failed to create account");
       console.error(JSON.stringify(err, null, 2));
@@ -48,9 +90,6 @@ const SignUpScreen = () => {
       setLoading(false);
     }
   };
-
-  if (pendingVerification)
-    return <VerifyEmail email={email} onBack={() => setPendingVerification(false)} />;
 
   return (
     <View style={authStyles.container}>
@@ -75,27 +114,59 @@ const SignUpScreen = () => {
           <Text style={authStyles.title}>Create Account</Text>
 
           <View style={authStyles.formContainer}>
+
+            <View style={authStyles.inputContainer}>
+              <TextInput
+                style={[
+                  authStyles.textInput,
+                  errors.name && authStyles.inputError
+                ]}
+                placeholder="Enter name"
+                placeholderTextColor={COLORS.textLight}
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  if (errors.name) setErrors({ ...errors, name: null });
+                }}
+                autoCapitalize="words"
+              />
+              {errors.name && <Text style={authStyles.errorText}>{errors.name}</Text>}
+            </View>
+
             {/* Email Input */}
             <View style={authStyles.inputContainer}>
               <TextInput
-                style={authStyles.textInput}
+                style={[
+                  authStyles.textInput,
+                  errors.email && authStyles.inputError
+                ]}
                 placeholder="Enter email"
                 placeholderTextColor={COLORS.textLight}
                 value={email}
-                onChangeText={setEmail}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  if (errors.email) setErrors({ ...errors, email: null });
+                }}
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
+              {errors.email && <Text style={authStyles.errorText}>{errors.email}</Text>}
             </View>
 
             {/* Password Input */}
             <View style={authStyles.inputContainer}>
               <TextInput
-                style={authStyles.textInput}
+                style={[
+                  authStyles.textInput,
+                  errors.password && authStyles.inputError
+                ]}
                 placeholder="Enter password"
                 placeholderTextColor={COLORS.textLight}
                 value={password}
-                onChangeText={setPassword}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (errors.password) setErrors({ ...errors, password: null });
+                }}
                 secureTextEntry={!showPassword}
                 autoCapitalize="none"
               />
@@ -109,6 +180,7 @@ const SignUpScreen = () => {
                   color={COLORS.textLight}
                 />
               </TouchableOpacity>
+              {errors.password && <Text style={authStyles.errorText}>{errors.password}</Text>}
             </View>
 
             {/* Sign Up Button */}
@@ -135,4 +207,5 @@ const SignUpScreen = () => {
     </View>
   );
 };
+
 export default SignUpScreen;

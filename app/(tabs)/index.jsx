@@ -110,7 +110,6 @@ const HomeScreen = () => {
   }
 
 
-  console.log("res", process.env.EXPO_API_BASEURL)
 
 
   

@@ -90,4 +90,14 @@ export const authStyles = StyleSheet.create({
     color: COLORS.primary,
     fontWeight: "600",
   },
+  inputError: {
+  borderColor: '#ff3b30',
+  borderWidth: 1,
+},
+errorText: {
+  color: '#ff3b30',
+  fontSize: 12,
+  marginTop: 4,
+  marginLeft: 8,
+},
 });

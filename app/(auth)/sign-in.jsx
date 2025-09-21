@@ -1,5 +1,4 @@
-import { useSignIn } from "@clerk/clerk-expo";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   View,
@@ -17,42 +16,51 @@ import { Image } from "expo-image";
 
 import { authStyles } from "../../assets/styles/auth.styles";
 import { COLORS } from "../../constants/colors";
+import { authAxios, withoutAuthAxios } from "../../config/config";
+import { useAuth } from "../../context/AuthContext";
 
 const SignInScreen = () => {
   const router = useRouter();
+    const { user,handleLogin } = useAuth()
 
-  const { signIn, setActive, isLoaded } = useSignIn();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+console.log("user",user)
+   if (user) return <Redirect href={"/"} />;
+
+
+  const [email, setEmail] = useState("manish@gmail.com");
+  const [password, setPassword] = useState("Manish@1234");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSignIn = async () => {
+
+    console.log("handleSignIn",user)
     if (!email || !password) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
-    if (!isLoaded) return;
 
     setLoading(true);
 
     try {
-      const signInAttempt = await signIn.create({
-        identifier: email,
-        password,
+    
+      const response =await withoutAuthAxios().post(`/login`, {
+        email: email,
+        password: password,
       });
 
-      if (signInAttempt.status === "complete") {
-        await setActive({ session: signInAttempt.createdSessionId });
-      } else {
-        Alert.alert("Error", "Sign in failed. Please try again.");
-        console.error(JSON.stringify(signInAttempt, null, 2));
-      }
-    } catch (err) {
-      Alert.alert("Error", err.errors?.[0]?.message || "Sign in failed");
-      console.error(JSON.stringify(err, null, 2));
+      console.log("response", response.data.user)
+      
+      // Handle successful sign-in
+    //  Alert.alert("Success", "Sign in successful!");
+      // You might want to navigate to the home screen
+
+      handleLogin(response.data.user,"wefrgbghf")
+      router.push("/")
+    } catch (error) {
+     Alert.alert(error.response.data.message)
     } finally {
       setLoading(false);
     }

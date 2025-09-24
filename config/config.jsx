@@ -3,7 +3,7 @@ import axios from "axios"
 
 export const withoutAuthAxios = () => {
     return axios.create({
-        baseURL: `${"http://192.168.1.105:4000"}/api/public`
+        baseURL: `${"http://192.168.1.31:4000"}/api/public`
  
     });
 }; 

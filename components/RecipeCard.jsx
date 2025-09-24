@@ -27,17 +27,13 @@ export default function RecipeCard({ recipe }) {
 
       <View style={recipeCardStyles.content}>
         <Text style={recipeCardStyles.title} numberOfLines={2}>
-          {recipe.name} {recipe.id}
+          {recipe.name} 
         </Text>
 
-        {recipe.description && (
-          <Text style={recipeCardStyles.description} numberOfLines={2}>
-            {recipe.description}
-          </Text>
-        )}
+       
 
         <View style={recipeCardStyles.footer}>
-          {recipe.cookTimeMinutes && (
+        
             <View style={recipeCardStyles.timeContainer}>
               <Ionicons
                 name="time-outline"
@@ -48,8 +44,8 @@ export default function RecipeCard({ recipe }) {
                 {recipe.cookTimeMinutes}
               </Text>
             </View>
-          )}
-          {recipe.servings && (
+         
+        
             <View style={recipeCardStyles.servingsContainer}>
               <Ionicons
                 name="people-outline"
@@ -60,7 +56,7 @@ export default function RecipeCard({ recipe }) {
                 {recipe.servings}
               </Text>
             </View>
-          )}
+         
         </View>
       </View>
     </TouchableOpacity>

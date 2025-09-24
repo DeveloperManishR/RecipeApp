@@ -55,28 +55,25 @@ const Setting = () => {
         );
     }
 
+    console.log("user", user)
+
     // Show full settings for authenticated users
     return (
         <ScrollView style={[styles.container, { backgroundColor: COLORS.background }]}>
             {/* Profile Section */}
             <View style={[styles.profileCard, { backgroundColor: COLORS.card, shadowColor: COLORS.shadow }]}>
                 <Image
-                    source={{
-                        uri: user?.imageUrl
-                    }}
+                    source={require("../../assets/images/user.png")}
                     style={styles.avatar}
                 />
                 <View style={styles.profileInfo}>
                     <Text style={[styles.name, { color: COLORS.text }]}>
-                        {user?.fullName || user?.firstName || "User"}
+                        {user?.name}
                     </Text>
                     <Text style={[styles.email, { color: COLORS.textLight }]}>
-                        {user?.primaryEmailAddress?.emailAddress || "No email available"}
+                        {user?.email}
                     </Text>
-                    <View style={[styles.statusBadge, { backgroundColor: COLORS.primary + '20' }]}>
-                        <View style={[styles.statusDot, { backgroundColor: COLORS.primary }]} />
-                        <Text style={[styles.statusText, { color: COLORS.primary }]}>Active</Text>
-                    </View>
+
                 </View>
             </View>
 

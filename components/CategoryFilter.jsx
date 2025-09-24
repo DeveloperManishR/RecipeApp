@@ -5,7 +5,7 @@ import { homeStyles } from "../assets/styles/home.styles";
 export default function CategoryFilter({ categories, selectedCategory, onSelectCategory }) {
  
  console.log("categories",categories) 
-  return (
+  return ( 
     <View style={homeStyles.categoryFilterContainer}>
       <ScrollView
         horizontal
@@ -14,9 +14,7 @@ export default function CategoryFilter({ categories, selectedCategory, onSelectC
       >
         {categories&&categories.map((category) => {
 
-          {
-            console.log("categorycategory",category) 
-          }
+         
           const isSelected = selectedCategory === category;
           return (
             <TouchableOpacity
@@ -24,6 +22,8 @@ export default function CategoryFilter({ categories, selectedCategory, onSelectC
               style={[homeStyles.categoryButton, isSelected && homeStyles.selectedCategory]}
               onPress={() => onSelectCategory(category)}
               activeOpacity={0.7}
+              keyExtractor={() => Math.random().toString()}
+
             >
               <Image
                 source={{ uri: category.image }}

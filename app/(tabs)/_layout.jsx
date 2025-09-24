@@ -44,6 +44,15 @@ const TabsLayout = () => {
           tabBarIcon: ({ color, size }) => <Ionicons name="search" size={size} color={color} />,
         }}
       />
+
+      <Tabs.Screen
+        name="Chat"
+        options={{
+          title: "Chat",
+          tabBarIcon: ({ color, size }) => <Ionicons name="chatbox-ellipses-outline" size={size} color={color} />,
+          tabBarStyle: { display: "none" }, // 👈 hides tab bar
+        }}
+      />
       <Tabs.Screen
         name="favorites"
         options={{
@@ -51,7 +60,7 @@ const TabsLayout = () => {
           tabBarIcon: ({ color, size }) => <Ionicons name="heart" size={size} color={color} />,
         }}
       />
-       <Tabs.Screen
+      <Tabs.Screen
         name="Setting"
         options={{
           title: "Setting",

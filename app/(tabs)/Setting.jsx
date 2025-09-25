@@ -1,12 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from "react-native";
-import { COLORS } from "../../constants/colors";
 import { useRouter } from "expo-router";
-import { useContext } from "react";
+import { Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { COLORS } from "../../constants/colors";
 import { useAuth } from "../../context/AuthContext";
 const Setting = () => {
 
-    const { user } = useAuth()
+    const { user ,handleAuthLogout} = useAuth()
     const router = useRouter();
     const handleLogout = () => {
         Alert.alert(
@@ -18,8 +17,8 @@ const Setting = () => {
                     text: "Sign Out",
                     style: "destructive",
                     onPress: () => {
-                        signOut();
-                        router.push("/(auth)/sign-in");
+                        handleAuthLogout()
+                        //router.push("/(auth)/sign-in");
                     }
                 },
             ]
@@ -121,12 +120,12 @@ const Setting = () => {
 
                 <TouchableOpacity style={[styles.item, { borderTopColor: COLORS.border }]}>
                     <Ionicons name="moon-outline" size={22} color={COLORS.text} />
-                    <View style={styles.itemContent}>
+                    <TouchableOpacity  onPress={()=>router.push("/theme")} style={styles.itemContent}>
                         <Text style={[styles.itemText, { color: COLORS.text }]}>Theme</Text>
                         <Text style={[styles.itemSubtext, { color: COLORS.textLight }]}>
                             Light, dark, or system
                         </Text>
-                    </View>
+                    </TouchableOpacity>
                     <Ionicons name="chevron-forward" size={18} color={COLORS.textLight} />
                 </TouchableOpacity>
 

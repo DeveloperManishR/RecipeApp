@@ -1,21 +1,21 @@
+import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import {
-  View,
-  Text,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { authStyles } from "../../assets/styles/auth.styles";
-import { Image } from "expo-image";
-import { COLORS } from "../../constants/colors";
-import { Ionicons } from "@expo/vector-icons";
-import { withoutAuthAxios } from "../../config/config";
 import { z } from "zod";
+import { authStyles } from "../../assets/styles/auth.styles";
+import { withoutAuthAxios } from "../../config/config";
+import { COLORS } from "../../constants/colors";
 
 const SignUpScreen = () => {
   const router = useRouter();
@@ -74,14 +74,14 @@ const SignUpScreen = () => {
 
     const payLoad = {
       name: name,
-      email: email,
+      email: email.toLocaleLowerCase(),
       password: password
     };
 
     try {
       const response = await withoutAuthAxios().post(`/register`, payLoad);
     
-      router.push('/login')
+router.back()
       // You might want to navigate to login or verify email screen
     } catch (err) {
       Alert.alert("Error", err.errors?.[0]?.message || "Failed to create account");

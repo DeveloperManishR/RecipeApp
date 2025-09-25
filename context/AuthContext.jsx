@@ -13,6 +13,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
+  const [currentTheme, setcurrentTheme] = useState(second)
 
   const handleLogin = (userData, token) => {
     console.log("Logged in user:", userData);
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children }) => {
    
   };
 
-  const handleLogout = () => {
+  const handleAuthLogout = () => {
     setUser(null);
     setToken("");
    
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, handleLogin, handleLogout }}>
+    <AuthContext.Provider value={{ user, token, handleLogin, handleAuthLogout }}>
       {children}
     </AuthContext.Provider>
   );

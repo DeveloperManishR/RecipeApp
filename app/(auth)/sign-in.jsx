@@ -1,22 +1,22 @@
+import { Ionicons } from "@expo/vector-icons";
 import { Redirect, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  View,
-  Text,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 import { Image } from "expo-image";
 
 import { authStyles } from "../../assets/styles/auth.styles";
+import { withoutAuthAxios } from "../../config/config";
 import { COLORS } from "../../constants/colors";
-import { authAxios, withoutAuthAxios } from "../../config/config";
 import { useAuth } from "../../context/AuthContext";
 
 const SignInScreen = () => {
@@ -29,7 +29,7 @@ console.log("user",user)
 
 
   const [email, setEmail] = useState("manish@gmail.com");
-  const [password, setPassword] = useState("Manish@1234");
+  const [password, setPassword] = useState("Manish@123");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -51,13 +51,13 @@ console.log("user",user)
         password: password,
       });
 
-      console.log("response", response.data.user)
+      console.log("response", response.data)
       
       // Handle successful sign-in
     //  Alert.alert("Success", "Sign in successful!");
       // You might want to navigate to the home screen
 
-      handleLogin(response.data.user,"wefrgbghf")
+      handleLogin(response.data.user,response.data.token)
       router.push("/")
     } catch (error) {
      Alert.alert(error.response.data.message)

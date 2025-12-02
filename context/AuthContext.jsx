@@ -1,3 +1,4 @@
+import { THEMES } from "@/constants/colors";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
@@ -13,7 +14,9 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState("");
-  const [currentTheme, setcurrentTheme] = useState(second)
+  const [currentTheme, setcurrentTheme] = useState(THEMES.coffee)
+
+
 
   const handleLogin = (userData, token) => {
     console.log("Logged in user:", userData);
@@ -40,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, handleLogin, handleAuthLogout }}>
+    <AuthContext.Provider value={{ user, token, handleLogin, handleAuthLogout,currentTheme ,setcurrentTheme}}>
       {children}
     </AuthContext.Provider>
   );
